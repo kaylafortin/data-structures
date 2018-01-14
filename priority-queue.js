@@ -28,8 +28,8 @@ pos   = [ 0, 1, 2 , 3, 4 , 5,  6  ]
 */
 
 class Element {
-    constructor(priority, val) {
-        this.value = val;
+    constructor(priority, value) {
+        this.value = value;
         this.priority = priority;
     }
 }
@@ -41,8 +41,8 @@ class PriorityQueue {
         this.queue = [];
     }
 
-    enqueue(value, priority) {
-        const newElement = new Element(value, priority);
+    enqueue(priority, value) {
+        const newElement = new Element(priority, value);
         this.queue.push(newElement);
         this._bubbleUp(this.queue.length - 1);
     }
