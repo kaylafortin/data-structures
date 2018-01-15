@@ -44,6 +44,7 @@ class Graph {
             vertex.predecessor = null;
             vertex.visited = false;
         });
+        return;
     }
     
     print() {

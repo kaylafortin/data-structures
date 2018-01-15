@@ -4,12 +4,11 @@ const { Queue } = require('../queue.array.js');
 class Search {
     constructor() {
         this.graph = [];
-        this.queue = new Queue();
     }
 
     start(graph, root, end) {
-        let queue = this.queue;
-
+        
+        let queue = new Queue();
         //add first node to queue and set prop to visited
         queue.enqueue(graph[root]);
         graph[root].visited = true;
@@ -42,14 +41,23 @@ class Search {
         //store the updated graph as a property
         //and call method to print results
         this.graph = graph;
+        
         this._printResults(this.graph[end]);
     }
 
     _printResults(end) {
+        
+        if (!end) {
+            this.graph.forEach(function(vertex){
+                console.log('vertex : ', vertex.value, 'predecessor : ', vertex.predecessor);
+            });
+            return;
+        }
+        
         let current = end;
         let path = [end.value];
 
-        //collect the values of the path
+        // collect the values of the path
         while (current.predecessor !== null) {
             path.unshift(current.predecessor);
             current = this.graph[current.predecessor];
@@ -60,6 +68,9 @@ class Search {
         console.log('distance : ', path.length - 1);
     }
 }
+
+//list of edges from here: 
+//https://www.khanacademy.org/computing/computer-science/algorithms/graph-representation/a/representing-graphs
 
 const EDGES = [
     [0, 1],
@@ -78,12 +89,15 @@ const EDGES = [
     [7, 8],
     [7, 9]
 ];
+
 const VERTICES = 10;
 
 let graph = new Graph(EDGES, VERTICES);
 
 const search = new Search();
-search.start(graph.data, 0, 0);
+
+search.start(graph.data, 0, 2);
 
 graph.clear();
+
 search.start(graph.data, 0, 8);
