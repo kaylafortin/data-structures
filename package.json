@@ -1,0 +1,19 @@
+{
+  "name": "data-structures",
+  "version": "1.0.0",
+  "description": "data structures written in js ",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hennigk/data-structures.git"
+  },
+  "author": "Kayla Hennig",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hennigk/data-structures/issues"
+  },
+  "homepage": "https://github.com/hennigk/data-structures#readme"
+}
