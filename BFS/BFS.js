@@ -1,5 +1,6 @@
 const { Graph } = require('./Graph.js');
 const { Queue } = require('../queue.array.js');
+const { d3 } = require("d3");
 
 class Search {
     constructor() {
@@ -62,10 +63,14 @@ class Search {
             path.unshift(current.predecessor);
             current = this.graph[current.predecessor];
         }
-
+        
+        let graph = new Graph();
+        graph.highlightPath(path, this.graph);
         //print results
         console.log('path : ', path);
         console.log('distance : ', path.length - 1);
+        
+        
     }
 }
 
@@ -90,14 +95,15 @@ const EDGES = [
     [7, 9]
 ];
 
-const VERTICES = 10;
+module.exports.Search = Search;
+// const VERTICES = 10;
 
-let graph = new Graph(EDGES, VERTICES);
+// let graph = new Graph();
+// graph.create(10);
+// const search = new Search();
 
-const search = new Search();
+// search.start(graph.data, 0, 2);
 
-search.start(graph.data, 0, 2);
+// graph.clear();
 
-graph.clear();
-
-search.start(graph.data, 0, 8);
+// search.start(graph.data, 0, 8);
