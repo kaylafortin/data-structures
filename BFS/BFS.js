@@ -67,6 +67,7 @@ class Search {
         let graph = new Graph();
         graph.highlightPath(path, this.graph);
         //print results
+        $('#path').text('Path: ' + path);
         console.log('path : ', path);
         console.log('distance : ', path.length - 1);
         

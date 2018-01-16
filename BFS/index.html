@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+<meta charset="utf-8">
+
+<head>
+  <title>Breadth First Search</title>
+</head>
+<style>
+  .link {
+    stroke: #bbb;
+  }
+
+  .path {
+    stroke: red;
+  }
+
+  .node text {
+    pointer-events: none;
+    font: 16px sans-serif;
+  }
+
+  svg {
+    overflow: visible;
+  }
+
+  #path {
+    font-size: 18px;
+  }
+</style>
+
+<body>
+
+  <label>Number of Nodes:</label>
+  <input type="number" max="20" id="numNodes"></input>
+  <input type="submit" value="Draw Graph" id="draw" />
+  
+  <label>Root:</label>
+  <input type="number" max="20" id="root"></input>
+  <label>Find:</label>
+  <input type="number" max="20" id="end"></input>
+  <input type="submit" value="Search" id="submit" />
+  <div id="path"></div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script type="text/javascript" src="../build/app.bundle.js"></script>
+</body>
+
+</html>
