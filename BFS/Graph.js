@@ -174,7 +174,7 @@ class Graph {
             vertex.visited = false;
         });
 
-        $('.link').removeClass('path');
+        $('line').removeClass('path');
         return this;
     }
 

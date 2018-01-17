@@ -6883,7 +6883,7 @@ var Graph = function () {
                 vertex.visited = false;
             });
 
-            $('.link').removeClass('path');
+            $('line').removeClass('path');
             return this;
         }
     }, {
