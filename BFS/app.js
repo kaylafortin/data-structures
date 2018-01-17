@@ -5,11 +5,11 @@ let graph = new Graph();
 const search = new Search();
 const defaultNum = 8,
 defaultRoot = 2,
-defaultEnd = 5
+defaultEnd = 5;
 
-graph.create(8);
+graph.create(defaultNum);
 
-search.start(graph.data, 2, 4);
+search.start(graph.data, defaultRoot, defaultEnd);
 
 $('#numNodes').val(defaultNum);
 $('#root').val(defaultRoot);
