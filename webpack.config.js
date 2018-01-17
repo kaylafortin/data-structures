@@ -6,14 +6,15 @@ var webpack = require('webpack');
          path: path.resolve(__dirname, 'BFS/build'),
          filename: 'app.bundle.js'
      },
+     watch: true,
      module: {
          loaders: [
              {
                  test: /\.js$/,
                  loader: 'babel-loader',
                  query: {
-                     presets: ['es2015'],
-                     ignore: ["**/d3.js"]
+                     presets: ['es2015']
+                     // ignore: ["**/d3.js"]
                  }
                  
              }
