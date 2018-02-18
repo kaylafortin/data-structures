@@ -71,5 +71,19 @@ class Search {
     }
 }
 
+// const VERTICES = 10;
+
+// let graph = new Graph();
+
+// const search = new Search();
+
+// graph.create(VERTICES);
+
+// search.start(graph.data, 0, 2);
+
+// graph.clear();
+
+// search.start(graph.data, 0, 8);
+
 module.exports.Search = Search;
 

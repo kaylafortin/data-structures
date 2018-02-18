@@ -1,9 +1,9 @@
 var path = require('path');
 var webpack = require('webpack');
  module.exports = {
-     entry: './Search_Algorithms/app.js',
+     entry: './search-algorithms/app.js',
      output: {
-         path: path.resolve(__dirname, 'Search_Algorithms/build'),
+         path: path.resolve(__dirname, 'search-algorithms/build'),
          filename: 'app.bundle.js'
      },
      watch: true,
