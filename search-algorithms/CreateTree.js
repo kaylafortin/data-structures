@@ -94,6 +94,7 @@ class Tree {
             vertex.visited = false;
         });
     }
+<<<<<<< HEAD
     _createTree() {
         let links = this.graphJSON.links;
         var data = {};
