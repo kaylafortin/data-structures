@@ -1,6 +1,6 @@
-const { Graph } = require('./Graph.js');
+const { Graph } = require('./CreateGraph.js');
 const { Queue } = require('../queue.array.js');
-const { d3 } = require("d3");
+var $ = require('jquery');
 
 class Search {
     constructor() {
@@ -43,7 +43,7 @@ class Search {
         //and call method to print results
         this.graph = graph;
         
-        this._printResults(this.graph[end]);
+        return this._printResults(this.graph[end]);
     }
 
     _printResults(end) {
@@ -64,47 +64,12 @@ class Search {
             current = this.graph[current.predecessor];
         }
         
-        let graph = new Graph();
-        graph.highlightPath(path, this.graph);
-        //print results
-        $('#path').text('Path: ' + path);
         console.log('path : ', path);
         console.log('distance : ', path.length - 1);
         
-        
+        return path;
     }
 }
 
-//list of edges from here: 
-//https://www.khanacademy.org/computing/computer-science/algorithms/graph-representation/a/representing-graphs
-
-const EDGES = [
-    [0, 1],
-    [0, 6],
-    [0, 8],
-    [1, 4],
-    [1, 6],
-    [1, 9],
-    [2, 4],
-    [2, 6],
-    [3, 4],
-    [3, 5],
-    [3, 8],
-    [4, 5],
-    [4, 9],
-    [7, 8],
-    [7, 9]
-];
-
 module.exports.Search = Search;
-// const VERTICES = 10;
 
-// let graph = new Graph();
-// graph.create(10);
-// const search = new Search();
-
-// search.start(graph.data, 0, 2);
-
-// graph.clear();
-
-// search.start(graph.data, 0, 8);

@@ -1,81 +1,21 @@
-const { Vertex } = require('./Vertex.js');
-var d3 = require("d3");
+const $ = require('jquery');
+const d3 = require('d3');
 
-class Graph {
+class Drawing {
 
     constructor() {
-        this.edgeList = [];
-        this.numberOfVertices = 0;
         this.graphJSON = {};
     }
 
-    create(numOfVertices) {
-        let links = {};
-        let linksJSON = [];
-        let nodesJSON = [];
-        this.numberOfVertices = numOfVertices;
-        for (var i = 0; i < numOfVertices; i++) {
-            links[i] = {};
-            nodesJSON.push({ 'id': i });
-            if (i + 1 == numOfVertices) break;
-            let numOfEdges = this._getRandomInt(1, numOfVertices > 3 ? 2 : numOfVertices - i);
-
-            for (var j = 0; j < numOfEdges; j++) {
-                let edge = this._getRandomInt(i + 1, numOfVertices - 1);
-
-                if (!links[i][edge]) {
-                    links[i][edge] = edge;
-                    this.edgeList.push([i, edge]);
-                    linksJSON.push({ "source": i, "target": edge });
-                }
-            }
-        }
-        this.graphJSON.nodes = nodesJSON;
-        this.graphJSON.links = linksJSON;
-        this._drawGraph();
-        return this.data = this._createVertices();
-    }
-
-    _getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    _createAdjList() {
-        //ceates an array of the adjacent nodes for each nodes
-        //this creates a undirected data set 
-        //create empty array list for storing adjacent nodes
-
-        let adjList = Array.apply(null, Array(this.numberOfVertices)).map(() => new Array());
-
-        this.edgeList.forEach(function(node, index) {
-
-            let node1 = node[0];
-            let node2 = node[1];
-            adjList[node1].push(node2);
-            adjList[node2].push(node1);
-        });
-
-        return adjList;
-    }
-
-    _createVertices() {
-        this.adjList = this._createAdjList();
-
-        let vertices = this.adjList.map(function(adjacent, index) {
-            let vertex = new Vertex;
-            vertex.adjacent = adjacent;
-            vertex.value = index;
-            return vertex;
-        });
-
-        return vertices;
-    }
-
-    _drawGraph() {
+    drawGraph(graph) {
+        
+        this.graphJSON = graph;
+        
         //clears the previously drawn graph
         $('svg').remove();
 
-        let width = 1150;
-        let height = 550;
+        let width = 1050;
+        let height = 450;
 
         var svg = d3.select("body").append("svg")
             .attr("width", width)
@@ -132,7 +72,7 @@ class Graph {
 
             node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
         });
-
+        
         function dragstarted(d) {
             if (!d3.event.active) simulation.alphaTarget(0.3).restart();
             d.fx = d.x;
@@ -151,7 +91,11 @@ class Graph {
         }
     }
 
-    highlightPath(path, data) {
+    highlightPath(path) {
+        
+        //remove any pevious path
+        $('line').removeClass('path');
+        
         let links = d3.selectAll("line");
         links.filter(function(d, k) {
             let line = this;
@@ -169,19 +113,13 @@ class Graph {
     }
 
     clear() {
-        this.data.forEach(function(vertex, index) {
-            vertex.predecessor = null;
-            vertex.visited = false;
-        });
+        
+        //clears the previously drawn graph
+        $('svg').remove();
 
         $('line').removeClass('path');
         return this;
     }
-
-    print() {
-        //TO DO update to use console.table
-        console.log(this.data);
-    }
 }
 
-module.exports.Graph = Graph;
+module.exports.Drawing = Drawing;
