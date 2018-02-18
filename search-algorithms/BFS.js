@@ -1,6 +1,5 @@
 const { Graph } = require('./CreateGraph.js');
 const { Queue } = require('../queue.array.js');
-var $ = require('jquery');
 
 class Search {
     constructor() {
@@ -77,19 +76,19 @@ class Search {
     }
 }
 
-// const VERTICES = 10;
+const VERTICES = 10;
 
-// let graph = new Graph();
+let graph = new Graph();
 
-// const search = new Search();
+const search = new Search();
 
-// graph.create(VERTICES);
+graph.create(VERTICES);
 
-// search.start(graph.data, 0, 2);
+search.start(graph.data, 0, 2);
 
-// graph.clear();
+graph.clear();
 
-// search.start(graph.data, 0, 8);
+search.start(graph.data, 0, 8);
 
 module.exports.BreadthFirst = Search;
 
