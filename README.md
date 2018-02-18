@@ -1,3 +1,3 @@
 # data-structures
 
-visual example: https://data-structures-hennigk.c9users.io/search-algorithms/index.html 
+visual example: https://hennigk.github.io/data-structures/search-algorithms/index.html
