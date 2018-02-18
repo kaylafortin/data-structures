@@ -85,5 +85,5 @@ class Search {
 
 // search.start(graph.data, 0, 8);
 
-module.exports.Search = Search;
+module.exports.BreadthFirst = Search;
 

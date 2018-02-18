@@ -1,38 +1,57 @@
 const { Vertex } = require('./Vertex.js');
 
-class Graph {
+class Tree {
 
     constructor() {
         this.edgeList = [];
-        this.numberOfVertices = 0;
+        this.maxChildren = 3;
+        // this.maxDepth = 4;
+        this.maxNodes = 20;
         this.graphJSON = {};
     }
 
-    create(numOfVertices) {
+    create(children, nodes) {
+
+        // this.maxDepth = depth ? depth : this.maxDepth;
+        // this.maxChildren = children ? children : this.maxChildren;
+        // this.maxNodes = nodes ? nodes : this.maxNodes;
+        // console.log(this.maxChildren, this.maxNodes)
         let links = {};
         let linksJSON = [];
         let nodesJSON = [];
-        this.numberOfVertices = numOfVertices;
-        for (var i = 0; i < numOfVertices; i++) {
-            links[i] = {};
-            nodesJSON.push({ 'id': i });
-            if (i + 1 == numOfVertices) break;
-            let numOfEdges = this._getRandomInt(1, numOfVertices > 3 ? 2 : numOfVertices - i);
+        let id = 0;
+        let count = 1;
+        // this.numberOfVertices = numOfVertices;
+        
+        while(count < this.maxNodes) {
+        // for (var i = 0; i < 20; i++) {
+            links[id] = {};
+            nodesJSON.push({ 'id': id });
+            // if (i + 1 == numOfVertices) break;
+            let numOfEdges = this._getRandomInt(1, this.maxChildren);
+            // console.log(id, numOfEdges);
+            // console.log(linksJSON.length + 1, linksJSON.length + numOfEdges)
+            for (var j = 1; j <= numOfEdges; j++) {
+                // let edge = this._getRandomInt(i + 1, numOfVertices - 1);
 
-            for (var j = 0; j < numOfEdges; j++) {
-                let edge = this._getRandomInt(i + 1, numOfVertices - 1);
-
-                if (!links[i][edge]) {
-                    links[i][edge] = edge;
-                    this.edgeList.push([i, edge]);
-                    linksJSON.push({ "source": i, "target": edge });
-                }
+                // if (!links[i][j]) {
+                    // links[i][j] = j;
+                    this.edgeList.push([id, count]);
+                    // console.log([id, j]);
+                    linksJSON.push({ "source": id, "target": count });
+                    // console.log('j ',j,'count ', count);
+                    count ++;
+                    
+                    if (count >= this.maxNodes){ break };
+                // }
             }
+            id ++
         }
+        console.log(linksJSON)
+        // console.log(nodesJSON)
         this.graphJSON.nodes = nodesJSON;
         this.graphJSON.links = linksJSON;
-        console.log(this.graphJSON.nodes);
-        console.log(this.graphJSON.links);
+
         return this.data = this._createVertices();
     }
     
@@ -50,7 +69,7 @@ class Graph {
         //this creates a undirected data set 
         //create empty array list for storing adjacent nodes
 
-        let adjList = Array.apply(null, Array(this.numberOfVertices)).map(() => new Array());
+        let adjList = Array.apply(null, Array(this.maxNodes)).map(() => new Array());
 
         this.edgeList.forEach(function(node, index) {
 
@@ -72,7 +91,7 @@ class Graph {
             vertex.value = index;
             return vertex;
         });
-
+        
         return vertices;
     }
 
@@ -91,4 +110,8 @@ class Graph {
     }
 }
 
-module.exports.Graph = Graph;
+let tree = new Tree();
+tree.create();
+console.log(tree.data);
+// tree.print();
+module.exports.Tree = Tree;
