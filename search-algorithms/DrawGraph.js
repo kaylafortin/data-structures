@@ -10,6 +10,7 @@ class Drawing {
     drawGraph(graph) {
         
         this.graphJSON = graph;
+        console.log(this.graphJSON);
         
         //clears the previously drawn graph
         $('svg').remove();

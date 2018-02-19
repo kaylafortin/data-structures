@@ -4,7 +4,8 @@
   "description": "data structures written in js ",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "webpack": "webpack",
+    "start": "http-server"
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,8 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
+    "d3": "^4.13.0",
+    "jquery": "^3.3.1",
     "webpack": "^3.10.0"
-  },
-  "scripts": {
-    "webpack": "webpack",
-    "start": "http-server"
   }
 }
