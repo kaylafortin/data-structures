@@ -38958,7 +38958,7 @@ var DrawTree = function () {
 
             // set the dimensions and margins of the diagram
             var margin = { top: 20, right: 90, bottom: 30, left: 90 },
-                width = 660 - margin.left - margin.right,
+                width = 560 - margin.left - margin.right,
                 height = 500 - margin.top - margin.bottom;
 
             // declares a tree layout and assigns the size
@@ -38968,6 +38968,8 @@ var DrawTree = function () {
             var nodes = d3.hierarchy(treeData, function (d) {
                 return d.children;
             });
+
+            var color = d3.scaleOrdinal(d3.schemeCategory20);
 
             // maps the node data to the tree layout
             nodes = treemap(nodes);
@@ -38979,34 +38981,23 @@ var DrawTree = function () {
                 g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             // adds the links between the nodes
-            var link = g.selectAll(".link").data(nodes.descendants().slice(1)).enter().append("path").attr("class", "link").style("stroke", function (d) {
-                return d.data.level;
-            }).attr("d", function (d) {
-                return "M" + d.y + "," + d.x + "C" + (d.y + d.parent.y) / 2 + "," + d.x + " " + (d.y + d.parent.y) / 2 + "," + d.parent.x + " " + d.parent.y + "," + d.parent.x;
+            var link = g.selectAll(".links").data(nodes.descendants().slice(1)).enter().append("path").attr("class", "links").attr("stroke-width", 1).style("stroke", '#bbb').attr("d", function (d) {
+                return "M" + d.y + "," + d.x + " " + d.parent.y + "," + d.parent.x;
             });
 
             // adds each node as a group
-            var node = g.selectAll(".node").data(nodes.descendants()).enter().append("g").attr("class", function (d) {
-                return "node" + (d.children ? " node--internal" : " node--leaf");
-            }).attr("transform", function (d) {
+            var node = g.selectAll(".node").data(nodes.descendants()).enter().append("g").attr("class", "node").attr("transform", function (d) {
                 return "translate(" + d.y + "," + d.x + ")";
             });
 
-            // adds symbols as nodes
-            node.append("path").style("stroke", 'red').style("fill", 'blue');
-
-            // .attr("d", d3.symbol()
-            //     .size(function(d) { return d.data.value * 30; })
-            //     .type(function(d) {
-            //         if (d.data.value >= 9) { return d3.symbolCross; }
-            //         else if (d.data.value <= 9) { return d3.symbolDiamond; }
-            //     })); //     }));
-
-            node.append('circle').attr("r", 10).attr("fill", 'pink');
+            node.append('circle').attr("r", 10).attr("fill", function (d) {
+                return color(d.depth);
+            }).style("stroke", '#bbb');
+            // .style("fill", 'blue')
 
             // adds the text to the node
             node.append("text").attr("dy", ".35em").attr("x", function (d) {
-                return d.children ? (d.data.value + 4) * -1 : d.data.value + 4;
+                return d.children ? -13 : 13;
             }).style("text-anchor", function (d) {
                 return d.children ? "end" : "start";
             }).text(function (d) {
