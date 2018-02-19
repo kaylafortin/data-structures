@@ -39404,7 +39404,7 @@ var Search = function () {
                 //get the last value from the stack
                 var current = stack.peek();
 
-                if (current.value === end) {
+                if (current.value == end && end) {
                     break;
                 }
                 //get the value for the adjacent elements 

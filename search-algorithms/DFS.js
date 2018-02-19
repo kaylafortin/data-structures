@@ -23,7 +23,7 @@ class Search {
             //get the last value from the stack
             let current = stack.peek();
             
-            if (current.value === end) {
+            if (current.value == end && end) {
                 break;
             }
             //get the value for the adjacent elements 
