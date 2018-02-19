@@ -59,7 +59,7 @@ class Search {
             console.log(this.path);
             return {path: this.path, fullPath: this.path};
         }
-        // console.log(this.path)
+
         let current = end  ;
         let path = [end.value] ;
 
