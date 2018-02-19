@@ -16688,8 +16688,8 @@ var Graph = function () {
             }
             this.graphJSON.nodes = nodesJSON;
             this.graphJSON.links = linksJSON;
-            console.log(this.graphJSON.nodes);
-            console.log(this.graphJSON.links);
+            // console.log(this.graphJSON.nodes);
+            // console.log(this.graphJSON.links);
             return this.data = this._createVertices();
         }
     }, {
@@ -22368,7 +22368,7 @@ var _require2 = __webpack_require__(177),
     Tree = _require2.Tree;
 
 var _require3 = __webpack_require__(178),
-    Drawing = _require3.Drawing;
+    DrawGraph = _require3.DrawGraph;
 
 var _require4 = __webpack_require__(471),
     DrawTree = _require4.DrawTree;
@@ -22376,99 +22376,209 @@ var _require4 = __webpack_require__(471),
 var _require5 = __webpack_require__(472),
     BreadthFirst = _require5.BreadthFirst;
 
+var _require6 = __webpack_require__(474),
+    DepthFirst = _require6.DepthFirst;
+
 var $ = __webpack_require__(33);
 
 var graph = new Graph();
 var tree = new Tree();
-var drawing = new Drawing();
+var drawGraph = new DrawGraph();
 var drawTree = new DrawTree();
-var search = new BreadthFirst();
+var path = [];
 
-var defaultNum = 9,
-    defaultRoot = 2,
-    defaultEnd = 7;
+var BFS = new BreadthFirst();
+var DFS = new DepthFirst();
 
-var numberOfNodes = defaultNum;
+var defaultNodes = 9;
+var defaultRoot = 0;
+var defaultEnd = 7;
 
-$('#numNodes').val(defaultNum);
+var numberOfNodes = defaultNodes;
+var searchType = 'bfs';
+var dataVisual = 'graph';
+//set input values
+$('#numNodes').val(defaultNodes);
 $('#root').val(defaultRoot);
 $('#end').val(defaultEnd);
 
-drawNewTree();
+//draw tree
+drawNewGraph(searchType);
 
-//  drawNewGraph();
+//restart animation
+$('#animate').on('click', function () {
+    if (dataVisual == 'graph') {
+        graph.clear();
+        drawGraph.drawGraph(graph.graphJSON);
+        newSearch(searchType, graph.data, drawGraph.animatePath);
+    } else {
+        tree.clear();
+        drawTree.drawGraph(tree.root);
+        newSearch(searchType, tree.data, drawTree.animatePath);
+    }
+});
+
+$(document).ready(function () {
+    $('input[type=radio][name=search]').change(function () {
+        searchType = this.value;
+        if (dataVisual == 'graph') {
+            graph.clear();
+            drawGraph.drawGraph(graph.graphJSON);
+            newSearch(searchType, graph.data, drawGraph.animatePath);
+        } else {
+            tree.clear();
+            drawTree.drawGraph(tree.root);
+            newSearch(searchType, tree.data, drawTree.animatePath);
+        }
+    });
+
+    $('input[type=radio][name=type]').change(function () {
+
+        if (this.value == 'graph') {
+            dataVisual = 'graph';
+
+            drawNewGraph(searchType);
+        } else if (this.value == 'tree') {
+            dataVisual = 'tree';
+
+            drawNewTree(searchType);
+        }
+    });
+});
 
 $('#submit').on('click', function () {
 
-    if ($('#numNodes').val() != numberOfNodes) {
-        graph.clear();
-        drawNewGraph();
+    if (Number($('#numNodes').val()) !== Number(numberOfNodes)) {
+
+        if (dataVisual == 'graph') {
+
+            drawNewGraph(searchType);
+        } else {
+
+            drawNewTree(searchType);
+        }
     } else {
-        newSearch();
+        if (dataVisual == 'graph') {
+            graph.clear();
+            drawGraph.drawGraph(graph.graphJSON);
+            newSearch(searchType, graph.data, drawGraph.animatePath);
+        } else {
+            tree.clear();
+            drawTree.drawGraph(tree.root);
+            newSearch(searchType, tree.data, drawTree.animatePath);
+        }
     }
 });
 
 $('#draw').on('click', function () {
-    graph.clear();
-    drawNewGraph();
+    if (dataVisual == 'graph') {
+        graph.clear();
+        drawNewGraph(searchType);
+    } else {
+        tree.clear();
+        drawNewTree(searchType);
+    }
 });
 
-function drawNewGraph() {
-    var root = $('#root').val() ? $('#root').val() : defaultRoot;
-    var end = $('#end').val() ? $('#end').val() : defaultEnd;
-    var path = [];
+function drawNewGraph(search) {
 
-    numberOfNodes = $('#numNodes').val() ? $('#numNodes').val() : defaultNum;
+    path = [];
+
+    numberOfNodes = $('#numNodes').val() ? $('#numNodes').val() : defaultNodes;
 
     graph = new Graph();
 
     graph.create(Number(numberOfNodes));
 
-    drawing.drawGraph(graph.graphJSON);
+    drawGraph.drawGraph(graph.graphJSON);
 
-    path = search.start(graph.data, root, end);
-
-    drawing.highlightPath(path);
-
-    //print results
-    $('#path').text('Path: ' + path);
+    newSearch(search, graph.data, drawGraph.animatePath);
 }
 
-function drawNewTree() {
-    var root = $('#root').val() ? $('#root').val() : defaultRoot;
-    var end = $('#end').val() ? $('#end').val() : defaultEnd;
-    var path = [];
+function drawNewTree(search) {
+    path = [];
 
-    numberOfNodes = $('#numNodes').val() ? $('#numNodes').val() : defaultNum;
+    numberOfNodes = $('#numNodes').val() ? $('#numNodes').val() : defaultNodes;
 
     tree = new Tree();
 
-    tree.create(3, 10);
+    tree.create(3, Number(numberOfNodes));
 
     drawTree.drawGraph(tree.root);
 
-    path = search.start(tree.data, root, end);
-
-    // drawing.highlightPath(path);
-
-    //print results
-    $('#path').text('Path: ' + path);
+    newSearch(search, tree.data, drawTree.animatePath);
 }
 
-function newSearch() {
+function newSearch(search, data, highlight) {
     var root = $('#root').val() ? $('#root').val() : defaultRoot;
-    var end = $('#end').val() ? $('#end').val() : defaultEnd;
-    var path = [];
+    var end = $('#end').val();
 
-    graph.clear();
+    path = [];
+    if (search == 'bfs') {
 
-    path = search.start(graph.data, root, end);
+        path = BFS.start(data, root, end);
 
-    drawing.highlightPath(path);
+        //print results
+        $('#path').text('Shortest Path: ' + path.path);
 
-    //print results
-    $('#path').text('Path: ' + path);
+        if (dataVisual == 'graph') {
+            drawGraph.highlightPath(path.path);
+            highlight(path.path);
+        } else {
+            highlight(path.fullPath);
+        }
+    } else {
+
+        path = DFS.start(data, root, end);
+
+        // drawTree.animatePath(path);
+
+        //print results
+        $('#path').text('Path: ' + path.fullPath);
+
+        if (dataVisual == 'graph') {
+            drawGraph.highlightPath(path.fullPath);
+        }
+
+        highlight(path.fullPath);
+    }
+    // console.log(path.fullPath)
 }
+
+// function newBFSGraphSearch() {
+
+//     let root = $('#root').val() ? $('#root').val() : defaultRoot;
+//     let end = $('#end').val();
+
+//     path = [];
+
+//     graph.clear();
+
+//     path = BFS.start(graph.data, root, end);
+
+//     drawGraph.highlightPath(path);
+
+//     //print results
+//     $('#path').text('Path: ' + path);
+// }
+
+// function newBFSTreeSearch() {
+
+//     let root = $('#root').val() ? $('#root').val() : defaultRoot;
+//     let end = $('#end').val();
+
+//     path = [];
+
+//     graph.clear();
+//     tree.clear();
+
+//     path = BFS.start(tree.data, root, end);
+
+//     drawTree.highlightPath(path);
+
+//     //print results
+//     $('#path').text('Path: ' + path);
+// }
 
 /***/ }),
 /* 177 */
@@ -22490,7 +22600,6 @@ var Tree = function () {
 
         this.edgeList = [];
         this.maxChildren = 3;
-        // this.maxDepth = 4;
         this.maxNodes = 20;
         this.graphJSON = {};
         this.root = [];
@@ -22502,61 +22611,33 @@ var Tree = function () {
 
             this.maxChildren = children ? children : this.maxChildren;
             this.maxNodes = nodes ? nodes : this.maxNodes;
-            // console.log(this.maxChildren, this.maxNodes)
+
             var links = {};
-            var data = [];
-            var obj = {};
+
             var linksJSON = [];
             var nodesJSON = [{ 'name': 0 }];
             var id = 0;
             var count = 1;
-            // this.numberOfVertices = numOfVertices;
 
             while (count < this.maxNodes) {
-                // for (var i = 0; i < 20; i++) {
+
                 links[id] = {};
-                var _children = [];
-                var node = void 0;
 
-                // if (obj.children) {
-                //     let child = obj.children.
-                // }
-                // if (obj.children)
-
-
-                // if (i + 1 == numOfVertices) break;
                 var numOfEdges = this._getRandomInt(1, this.maxChildren);
-                // console.log(id, numOfEdges);
-                // console.log(linksJSON.length + 1, linksJSON.length + numOfEdges)
+
                 for (var j = 1; j <= numOfEdges; j++) {
-                    // let edge = this._getRandomInt(i + 1, numOfVertices - 1);
 
                     this.edgeList.push([id, count]);
-                    // console.log([id, j]);
                     linksJSON.push({ "source": id, "target": count });
                     nodesJSON.push({ 'id': count });
-                    // console.log('j ',j,'count ', count);
                     count++;
 
                     if (count >= this.maxNodes) {
                         break;
-                    };
-                    // }
+                    }
                 }
-                // if (id == 0) {
-                //     data[0] = {name: id, children: children};
-                // }
-                // else {
-                //     let c = true
-                //     while(c){
-                //         if (data[0].children.length)
-                //     }
-                // }
-
                 id++;
             }
-            console.log(linksJSON);
-            console.log(nodesJSON);
             this.graphJSON.nodes = nodesJSON;
             this.graphJSON.links = linksJSON;
 
@@ -22624,27 +22705,24 @@ var Tree = function () {
         value: function _createTree() {
             var links = this.graphJSON.links;
             var data = {};
-            var children = [];
-            console.log(links);
+
             for (var x = links.length - 1; x >= 0; x--) {
 
                 var value = links[x].source;
                 var child = links[x].target;
-                // console.log(value,child)
+
                 if (!data[value]) {
                     data[value] = { value: value, children: [] };
                 }
 
                 data[value].children.push({ value: child });
 
-                // console.log(data);
                 if (data[child]) {
                     data[value].children[data[value].children.length - 1] = data[child];
                 }
             }
             var root = data[0];
 
-            console.log(root);
             return this.root.push(data[0]);
         }
     }, {
@@ -22680,19 +22758,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var $ = __webpack_require__(33);
 var d3 = __webpack_require__(93);
 
-var Drawing = function () {
-    function Drawing() {
-        _classCallCheck(this, Drawing);
+var DrawGraph = function () {
+    function DrawGraph() {
+        _classCallCheck(this, DrawGraph);
 
         this.graphJSON = {};
     }
 
-    _createClass(Drawing, [{
+    _createClass(DrawGraph, [{
         key: 'drawGraph',
         value: function drawGraph(graph) {
 
             this.graphJSON = graph;
-            console.log(this.graphJSON);
 
             //clears the previously drawn graph
             $('svg').remove();
@@ -22702,7 +22779,7 @@ var Drawing = function () {
 
             var svg = d3.select("body").append("svg").attr("width", width).attr("height", height);
 
-            var color = d3.scaleOrdinal(d3.schemeCategory20);
+            var color = d3.scaleOrdinal(d3.schemeCategory20b);
 
             var simulation = d3.forceSimulation().force("link", d3.forceLink().id(function (d) {
                 return d.id;
@@ -22716,6 +22793,8 @@ var Drawing = function () {
 
             node.append('circle').attr("r", 10).attr("fill", function (d) {
                 return color(d.id);
+            }).attr('id', function (d) {
+                return 'node-' + d.id;
             }).call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended));
 
             node.append("text").attr("dx", 12).attr("dy", ".35em").text(function (d) {
@@ -22760,6 +22839,25 @@ var Drawing = function () {
             }
         }
     }, {
+        key: 'animatePath',
+        value: function animatePath(path) {
+            d3.selectAll(".node circle").style("fill", "");
+
+            path.forEach(function (node, index) {
+                if ($('#node-' + node).hasClass('visited')) {
+                    d3.select('#node-' + node).transition().duration(400).delay(700 * (index + 1)).style("fill", "");
+                    d3.select('#node-' + node).attr('class', 'visited').transition().duration(300).delay(700 * (index + 1) + 300).style("fill", "red");
+                } else {
+                    d3.select('#node-' + node).attr('class', 'visited').transition().duration(700).delay(700 * (index + 1)).style("fill", "red");
+                }
+            });
+        }
+    }, {
+        key: 'clearAnimation',
+        value: function clearAnimation() {
+            d3.selectAll(".node circle").style("fill", "");
+        }
+    }, {
         key: 'highlightPath',
         value: function highlightPath(path) {
 
@@ -22786,16 +22884,16 @@ var Drawing = function () {
 
             //clears the previously drawn graph
             $('svg').remove();
-
+            this.clearAnimation();
             $('line').removeClass('path');
             return this;
         }
     }]);
 
-    return Drawing;
+    return DrawGraph;
 }();
 
-module.exports.Drawing = Drawing;
+module.exports.DrawGraph = DrawGraph;
 
 /***/ }),
 /* 179 */
@@ -38942,6 +39040,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var $ = __webpack_require__(33);
 var d3 = __webpack_require__(93);
 
+/* references: 
+ * https://bl.ocks.org/mph006/7e7d7f629de75ada9af5
+ * https://bl.ocks.org/d3noob/76d6fa0dff4af77544da9dd69aef9249
+ */
+
 var DrawTree = function () {
     function DrawTree() {
         _classCallCheck(this, DrawTree);
@@ -38956,10 +39059,12 @@ var DrawTree = function () {
             this.graphJSON = graph;
             var treeData = graph[0];
 
+            //clears the previously drawn graph
+            $('svg').remove();
             // set the dimensions and margins of the diagram
-            var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+            var margin = { top: 10, right: 90, bottom: 30, left: 90 },
                 width = 560 - margin.left - margin.right,
-                height = 500 - margin.top - margin.bottom;
+                height = 450 - margin.top - margin.bottom;
 
             // declares a tree layout and assigns the size
             var treemap = d3.tree().size([height, width]);
@@ -38990,10 +39095,11 @@ var DrawTree = function () {
                 return "translate(" + d.y + "," + d.x + ")";
             });
 
-            node.append('circle').attr("r", 10).attr("fill", function (d) {
+            node.append('circle').attr("r", 10).attr('id', function (d) {
+                return 'node-' + d.data.value;
+            }).attr("fill", function (d) {
                 return color(d.depth);
             }).style("stroke", '#bbb');
-            // .style("fill", 'blue')
 
             // adds the text to the node
             node.append("text").attr("dy", ".35em").attr("x", function (d) {
@@ -39005,13 +39111,32 @@ var DrawTree = function () {
             });
         }
     }, {
+        key: 'animatePath',
+        value: function animatePath(path) {
+            d3.selectAll(".node circle").style("fill", "");
+
+            path.forEach(function (node, index) {
+                if ($('#node-' + node).hasClass('visited')) {
+                    d3.select('#node-' + node).transition().duration(400).delay(700 * (index + 1)).style("fill", "");
+                    d3.select('#node-' + node).attr('class', 'visited').transition().duration(300).delay(700 * (index + 1) + 300).style("fill", "red");
+                } else {
+                    d3.select('#node-' + node).attr('class', 'visited').transition().duration(700).delay(700 * (index + 1)).style("fill", "red");
+                }
+            });
+        }
+    }, {
+        key: 'clearAnimation',
+        value: function clearAnimation() {
+            d3.selectAll(".node circle").style("fill", "");
+        }
+    }, {
         key: 'highlightPath',
         value: function highlightPath(path) {
-
+            //TODO make highlight path work for trees
             //remove any pevious path
             $('line').removeClass('path');
 
-            var links = d3.selectAll("line");
+            var links = d3.selectAll(".links");
             links.filter(function (d, k) {
                 var line = this;
                 path.forEach(function (node, index) {
@@ -39031,6 +39156,8 @@ var DrawTree = function () {
 
             //clears the previously drawn graph
             $('svg').remove();
+
+            this.clearAnimation();
 
             $('line').removeClass('path');
             return this;
@@ -39066,6 +39193,7 @@ var Search = function () {
         _classCallCheck(this, Search);
 
         this.graph = [];
+        this.path = [];
     }
 
     _createClass(Search, [{
@@ -39073,18 +39201,21 @@ var Search = function () {
         value: function start(graph, root, end) {
 
             var queue = new Queue();
+
             //add first node to queue and set prop to visited
             queue.enqueue(graph[root]);
             graph[root].visited = true;
-
+            var path = [];
             //continue until the queue is empty
 
             var _loop = function _loop() {
 
                 //take first element from queue 
                 var current = queue.dequeue();
+                path.push(current.value);
+
                 //if it is the end point - exit loop
-                if (current.value == end) {
+                if (current.value == end && end) {
                     return 'break';
                 }
 
@@ -39098,6 +39229,7 @@ var Search = function () {
                     if (!graph[adjacent].visited) {
                         graph[adjacent].visited = true;
                         graph[adjacent].predecessor = current.value;
+
                         queue.enqueue(graph[adjacent]);
                     }
                 });
@@ -39111,7 +39243,7 @@ var Search = function () {
             //store the updated graph as a property
             //and call method to print results
             this.graph = graph;
-
+            this.path = path;
             return this._printResults(this.graph[end]);
         }
     }, {
@@ -39122,9 +39254,10 @@ var Search = function () {
                 this.graph.forEach(function (vertex) {
                     console.log('vertex : ', vertex.value, 'predecessor : ', vertex.predecessor);
                 });
-                return;
+                console.log(this.path);
+                return { path: this.path, fullPath: this.path };
             }
-
+            // console.log(this.path)
             var current = end;
             var path = [end.value];
 
@@ -39137,7 +39270,7 @@ var Search = function () {
             console.log('path : ', path);
             console.log('distance : ', path.length - 1);
 
-            return path;
+            return { path: path, fullPath: this.path };
         }
     }]);
 
@@ -39225,6 +39358,250 @@ module.exports.Queue = Queue;
 // console.log('dequeue is 3:', queue.dequeue()); // => 3
 // queue.print(); // => '[]'
 // console.log('dequeue is undefined:', queue.dequeue()); // => undefined
+
+/***/ }),
+/* 474 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var _require = __webpack_require__(91),
+    Graph = _require.Graph;
+
+var _require2 = __webpack_require__(177),
+    Tree = _require2.Tree;
+
+var _require3 = __webpack_require__(475),
+    Stack = _require3.Stack;
+
+var Search = function () {
+    function Search() {
+        _classCallCheck(this, Search);
+
+        this.graph = [];
+        this.path = [];
+    }
+
+    _createClass(Search, [{
+        key: 'start',
+        value: function start(graph, root, end) {
+
+            var path = [];
+            var stack = new Stack();
+            //add first node to stack and set prop to visited
+            stack.push(graph[root]);
+            path.push(graph[root].value);
+            graph[root].visited = true;
+
+            //continue until the stack is empty
+            while (stack.size()) {
+
+                //get the last value from the stack
+                var current = stack.peek();
+
+                if (current.value === end) {
+                    break;
+                }
+                //get the value for the adjacent elements 
+                var edges = graph[current.value].adjacent;
+
+                var hasSearchableChildren = false;
+                // console.log(edges)
+                // console.log(graph);
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = edges[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var adjacent = _step.value;
+
+
+                        //if the adjacent element has not been visited: mark as visited & add to stack
+                        //if the adjacent element has been visited: check next adjacent node
+                        if (!graph[adjacent].visited) {
+                            graph[adjacent].visited = true;
+                            // graph[adjacent].predecessor = current.value;
+
+                            stack.push(graph[adjacent]);
+                            path.push(graph[adjacent].value);
+
+                            hasSearchableChildren = true;
+                            //break loop
+                            // console.log('break: ', graph[adjacent].value);
+                            break;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+
+                if (!hasSearchableChildren) {
+                    // console.log('no')
+                    //if no children to search - remove the node from the stack
+
+                    stack.pop();
+
+                    if (stack.size() > 0) {
+                        // console.log('no: ', stack.peek().value);
+                        path.push(stack.peek().value);
+                    }
+                }
+                // console.log(stack.stack);
+                // stack.stack.forEach(function(node, index){console.log(node.value)
+                // });
+                // console.log(' ')
+            }
+            //store the updated graph as a property
+            //and call method to print results
+            this.graph = graph;
+            this.path = path;
+            return this._printResults(this.graph[end]);
+        }
+    }, {
+        key: '_printResults',
+        value: function _printResults(end) {
+
+            if (!end) {
+                // this.graph.forEach(function(vertex){
+                //     console.log('vertex : ', vertex.value, 'predecessor : ', vertex.predecessor);
+                // });
+                return { fullPath: this.path };
+            }
+
+            console.log(this.path);
+
+            // collect the values of the path
+            // while (current.predecessor !== null) {
+            //     path.unshift(current.predecessor);
+            //     current = this.graph[current.predecessor];
+            // }
+            // console.log(this.path)
+            console.log('path : ', this.path);
+            // console.log('distance : ', this.path.length - 1);
+
+            return { fullPath: this.path };
+        }
+    }]);
+
+    return Search;
+}();
+
+//list of edges from here: 
+//https://www.khanacademy.org/computing/computer-science/algorithms/graph-representation/a/representing-graphs
+
+var EDGES = [[0, 1], [0, 6], [0, 8], [1, 4], [1, 6], [1, 9], [2, 4], [2, 6], [3, 4], [3, 5], [3, 8], [4, 5], [4, 9], [7, 8], [7, 9]];
+
+module.exports.DepthFirst = Search;
+
+var VERTICES = 10;
+
+var tree = new Tree();
+
+var search = new Search();
+
+tree.create();
+// console.log('hi')
+// console.log('data', tree);
+search.start(tree.data, 0);
+
+// let graph = new Graph();
+
+// const search = new Search();
+
+// // graph.build(VERTICES, EDGES);
+
+
+// graph.create(VERTICES);
+// graph.print();
+// search.start(graph.data, 0, 3);
+
+// graph.clear();
+
+// search.start(graph.data, 0, 8);
+
+/***/ }),
+/* 475 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Stack = function () {
+	function Stack() {
+		_classCallCheck(this, Stack);
+
+		this.stack = [];
+	}
+
+	_createClass(Stack, [{
+		key: "push",
+		value: function push(data) {
+			this.stack.push(data);
+		}
+	}, {
+		key: "pop",
+		value: function pop() {
+			return this.stack.pop();
+		}
+	}, {
+		key: "size",
+		value: function size() {
+			return this.stack.length;
+		}
+	}, {
+		key: "peek",
+		value: function peek() {
+			return this.stack[this.stack.length - 1];
+		}
+	}, {
+		key: "print",
+		value: function print() {
+			console.log(this.stack);
+		}
+	}]);
+
+	return Stack;
+}();
+
+module.exports.Stack = Stack;
+
+// const stack = new Stack();
+
+// stack.push(1);
+// stack.push(2);
+// stack.push(3);
+// stack.print(); // => [ 1, 2, 3 ]
+// console.log('size is 3:', stack.size()); // => 3
+// console.log('peek is 3:', stack.peek()); // => 3
+// console.log('pop is 3:', stack.pop()); // => 3
+// stack.print(); // => [ 1, 2 ]
+// console.log('peek is 2:', stack.peek()); // => 2
+// console.log('pop is 2:', stack.pop()); // => 2
+// console.log('size is 1:', stack.size()); // => 1
+// console.log('pop is 1:', stack.pop()); // => 1
+// stack.print(); // => '[]'
+// console.log('pop is undefined:', stack.pop()); // => undefined
 
 /***/ })
 /******/ ]);

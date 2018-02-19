@@ -10,11 +10,11 @@ class Search {
 
     start(graph, root, end) {
         
-        this.path = [];
+        let path = [];
         let stack = new Stack();
         //add first node to stack and set prop to visited
         stack.push(graph[root]);
-        this.path.push(graph[root].value);
+        path.push(graph[root].value);
         graph[root].visited = true;
 
         //continue until the stack is empty
@@ -23,8 +23,7 @@ class Search {
             //get the last value from the stack
             let current = stack.peek();
             
-            if (current.value == end) {
-                console.log('yay');
+            if (current.value === end) {
                 break;
             }
             //get the value for the adjacent elements 
@@ -42,11 +41,11 @@ class Search {
                     // graph[adjacent].predecessor = current.value;
                     
                     stack.push(graph[adjacent]);
-                    this.path.push(graph[adjacent].value);
+                    path.push(graph[adjacent].value);
                     
                     hasSearchableChildren = true;
                     //break loop
-                    console.log('break: ', graph[adjacent].value);
+                    // console.log('break: ', graph[adjacent].value);
                     break; 
                 }
             }
@@ -58,20 +57,20 @@ class Search {
                 stack.pop();
                 
                 if (stack.size() > 0) {
-                    console.log('no: ', stack.peek().value);
-                    this.path.push(stack.peek().value);
+                    // console.log('no: ', stack.peek().value);
+                    path.push(stack.peek().value);
                 }
                 
             }
             // console.log(stack.stack);
-            stack.stack.forEach(function(node, index){console.log(node.value)
-            });
-            console.log(' ')
+            // stack.stack.forEach(function(node, index){console.log(node.value)
+            // });
+            // console.log(' ')
         }
         //store the updated graph as a property
         //and call method to print results
         this.graph = graph;
-        
+        this.path = path;
         return this._printResults(this.graph[end]);
     }
 
@@ -81,11 +80,10 @@ class Search {
             // this.graph.forEach(function(vertex){
             //     console.log('vertex : ', vertex.value, 'predecessor : ', vertex.predecessor);
             // });
-            return this.path;
+            return {fullPath: this.path};
         }
         
-        let current = end;
-        let path = [end.value];
+        console.log(this.path)
 
         // collect the values of the path
         // while (current.predecessor !== null) {
@@ -96,7 +94,7 @@ class Search {
         console.log('path : ', this.path);
         // console.log('distance : ', this.path.length - 1);
         
-        return this.path;
+        return {fullPath: this.path};
     }
 }
 

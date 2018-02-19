@@ -28,22 +28,36 @@
   #path {
     font-size: 18px;
   }
-  
 </style>
 
 <body style="height: 600px">
-
+  <center>
+      <input id="dfs" type="radio" name="search" value="dfs"> Depth First Search
+      <input id="bfs" type="radio" name="search" value="bfs" checked> Breadth First Search<br>
+    <!--<input type="submit" value="Depth First Search" id="dfs" />-->
+    <!--<input type="submit" value="Breadth First Search" id="bfs" />-->
+    <br><br>
+      <input type="radio" name="type" value="graph" checked> Graph
+      <input type="radio" name="type" value="tree"> Tree<br>
+    <!--<input type="submit" value="Graph" id="graph" />-->
+    <!--<input type="submit" value="Tree" id="tree" />-->
+  </center>
+  <hr>
+  <center>
   <label>Number of Nodes:</label>
   <input type="number" max="20" id="numNodes"></input>
   <input type="submit" value="Draw Graph" id="draw" />
-  
+
   <label>Root:</label>
   <input type="number" max="20" id="root"></input>
   <label>Find:</label>
   <input type="number" max="20" id="end"></input>
   <input type="submit" value="Search" id="submit" />
-  <div id="path"></div>
 
+  <input type="submit" value="Restart Animation" id="animate" />
+
+  <div id="path"></div>
+</center>
   <script type="text/javascript" src="./build/app.bundle.js"></script>
 </body>
 

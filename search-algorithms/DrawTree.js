@@ -1,6 +1,11 @@
 const $ = require('jquery');
 const d3 = require('d3');
 
+/* references: 
+ * https://bl.ocks.org/mph006/7e7d7f629de75ada9af5
+ * https://bl.ocks.org/d3noob/76d6fa0dff4af77544da9dd69aef9249
+ */
+
 class DrawTree {
 
     constructor() {
@@ -12,10 +17,12 @@ class DrawTree {
         this.graphJSON = graph;
         let treeData = graph[0];
 
+        //clears the previously drawn graph
+        $('svg').remove();
         // set the dimensions and margins of the diagram
-        var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+        var margin = { top: 10, right: 90, bottom: 30, left: 90 },
             width = 560 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            height = 450 - margin.top - margin.bottom;
 
         // declares a tree layout and assigns the size
         var treemap = d3.tree()
@@ -25,7 +32,7 @@ class DrawTree {
         var nodes = d3.hierarchy(treeData, function(d) {
             return d.children;
         });
-        
+
         var color = d3.scaleOrdinal(d3.schemeCategory20);
 
         // maps the node data to the tree layout
@@ -52,7 +59,6 @@ class DrawTree {
                 return "M" + d.y + "," + d.x +
                     " " + d.parent.y + "," + d.parent.x;
             });
-           
 
         // adds each node as a group
         var node = g.selectAll(".node")
@@ -63,21 +69,16 @@ class DrawTree {
                 return "translate(" + d.y + "," + d.x + ")";
             });
 
-    
-
         node.append('circle')
             .attr("r", 10)
+            .attr('id', function(d) { return 'node-' + d.data.value })
             .attr("fill", function(d) { return color(d.depth); })
-            .style("stroke",  '#bbb')
-            // .style("fill", 'blue')
+            .style("stroke", '#bbb');
 
         // adds the text to the node
         node.append("text")
             .attr("dy", ".35em")
-            .attr("x", function(d) {
-                return d.children ?
-                    -13 : 13
-            })
+            .attr("x", function(d) { return d.children ? -13 : 13 })
             .style("text-anchor", function(d) {
                 return d.children ? "end" : "start";
             })
@@ -85,12 +86,42 @@ class DrawTree {
 
     }
 
-    highlightPath(path) {
+    animatePath(path) {
+        d3.selectAll(".node circle")
+            .style("fill", "");
 
+        path.forEach(function(node, index) {
+            if ($('#node-' + node).hasClass('visited')) {
+                d3.select('#node-' + node)
+                    .transition().duration(400).delay(700 * (index + 1))
+                    .style("fill", "");
+                d3.select('#node-' + node)
+                    .attr('class', 'visited')
+                    .transition().duration(300).delay(700 * (index + 1) + 300)
+                    .style("fill", "red");
+            }
+            else {
+                d3.select('#node-' + node)
+                .attr('class', 'visited')
+                .transition().duration(700).delay(700 * (index + 1))
+                .style("fill", "red");
+            }
+            
+        });
+
+    }
+
+    clearAnimation() {
+        d3.selectAll(".node circle")
+            .style("fill", "");
+    }
+
+    highlightPath(path) {
+        //TODO make highlight path work for trees
         //remove any pevious path
         $('line').removeClass('path');
 
-        let links = d3.selectAll("line");
+        let links = d3.selectAll(".links");
         links.filter(function(d, k) {
             let line = this;
             path.forEach(function(node, index) {
@@ -110,6 +141,8 @@ class DrawTree {
 
         //clears the previously drawn graph
         $('svg').remove();
+
+        this.clearAnimation();
 
         $('line').removeClass('path');
         return this;

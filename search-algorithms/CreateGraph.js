@@ -31,8 +31,8 @@ class Graph {
         }
         this.graphJSON.nodes = nodesJSON;
         this.graphJSON.links = linksJSON;
-        console.log(this.graphJSON.nodes);
-        console.log(this.graphJSON.links);
+        // console.log(this.graphJSON.nodes);
+        // console.log(this.graphJSON.links);
         return this.data = this._createVertices();
     }
     

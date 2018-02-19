@@ -1,7 +1,7 @@
 const $ = require('jquery');
 const d3 = require('d3');
 
-class Drawing {
+class DrawGraph {
 
     constructor() {
         this.graphJSON = {};
@@ -10,7 +10,6 @@ class Drawing {
     drawGraph(graph) {
         
         this.graphJSON = graph;
-        console.log(this.graphJSON);
         
         //clears the previously drawn graph
         $('svg').remove();
@@ -22,7 +21,7 @@ class Drawing {
             .attr("width", width)
             .attr("height", height);
 
-        var color = d3.scaleOrdinal(d3.schemeCategory20);
+        var color = d3.scaleOrdinal(d3.schemeCategory20b);
 
         var simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(50))
@@ -49,6 +48,7 @@ class Drawing {
         node.append('circle')
             .attr("r", 10)
             .attr("fill", function(d) { return color(d.id); })
+            .attr('id', function(d) { return 'node-' + d.id })
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
@@ -91,7 +91,35 @@ class Drawing {
             d.fy = null;
         }
     }
+    
+    animatePath(path) {
+        d3.selectAll(".node circle")
+            .style("fill", "");
 
+        path.forEach(function(node, index) {
+            if ($('#node-' + node).hasClass('visited')) {
+                d3.select('#node-' + node)
+                    .transition().duration(400).delay(700 * (index + 1))
+                    .style("fill", "");
+                d3.select('#node-' + node)
+                    .attr('class', 'visited')
+                    .transition().duration(300).delay(700 * (index + 1) + 300)
+                    .style("fill", "red");
+            }
+            else {
+                d3.select('#node-' + node)
+                .attr('class', 'visited')
+                .transition().duration(700).delay(700 * (index + 1))
+                .style("fill", "red");
+            }
+            
+        });
+    }
+     clearAnimation() {
+        d3.selectAll(".node circle")
+            .style("fill", "");
+    }
+    
     highlightPath(path) {
         
         //remove any pevious path
@@ -117,10 +145,10 @@ class Drawing {
         
         //clears the previously drawn graph
         $('svg').remove();
-
+        this.clearAnimation();
         $('line').removeClass('path');
         return this;
     }
 }
 
-module.exports.Drawing = Drawing;
+module.exports.DrawGraph = DrawGraph;
