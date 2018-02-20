@@ -29,9 +29,42 @@ class Graph {
                 }
             }
         }
+        // console.log(this.graphJSON)
         this.graphJSON.nodes = nodesJSON;
         this.graphJSON.links = linksJSON;
 
+        return this.data = this._createVertices();
+    }
+    
+    createWeighted(numOfVertices, maxWeight) {
+        maxWeight = maxWeight ? maxWeight : 7;
+
+        let links = {};
+        let linksJSON = [];
+        let nodesJSON = [];
+        this.numberOfVertices = numOfVertices;
+        for (var i = 0; i < numOfVertices; i++) {
+            links[i] = {};
+            nodesJSON.push({ 'id': i });
+            if (i + 1 == numOfVertices) break;
+            let numOfEdges = this._getRandomInt(1, numOfVertices > 3 ? 2 : numOfVertices - i);
+
+            for (var j = 0; j < numOfEdges; j++) {
+                let edge = this._getRandomInt(i + 1, numOfVertices - 1);
+                let edgeWeight = this._getRandomInt(1, maxWeight);
+                
+                if (!links[i][edge]) {
+                    links[i][edge] = edge;
+                    this.edgeList.push([i, edge, edgeWeight]);
+                    linksJSON.push({ "source": i, "target": edge , "weight": edgeWeight});
+                }
+            }
+        }
+        
+        this.graphJSON.nodes = nodesJSON;
+        this.graphJSON.links = linksJSON;
+        // console.log(this.graphJSON)
+        // console.log(this.edgeList)
         return this.data = this._createVertices();
     }
     
@@ -55,10 +88,12 @@ class Graph {
 
             let node1 = node[0];
             let node2 = node[1];
-            adjList[node1].push(node2);
-            adjList[node2].push(node1);
+            let weight = node[2];
+            
+            adjList[node1].push({value: node2, weight: weight});
+            adjList[node2].push({value: node1, weight: weight});
         });
-
+        
         return adjList;
     }
 

@@ -41,9 +41,9 @@ class PriorityQueue {
         this.queue = [];
     }
 
-    enqueue(priority, value) {
-        const newElement = new Element(priority, value);
-        this.queue.push(newElement);
+    enqueue(element) {
+        // const newElement = new Element(priority, value);
+        this.queue.push(element);
         this._bubbleUp(this.queue.length - 1);
     }
 
@@ -58,6 +58,21 @@ class PriorityQueue {
         }
 
         return result;
+    }
+    reprioritizeElement(element){
+        let n = this.queue.indexOf(element);
+        console.log(n,element)
+        console.log(this.queue)
+        if (n > -1) {
+            let el = this.queue.splice(n, 1);
+            this._bubbleUp(n);
+            console.log('e', el)
+            return el;
+        }
+    }
+    
+    size() {
+        return this.queue.length;
     }
 
     _bubbleUp(position) {
@@ -125,15 +140,23 @@ class PriorityQueue {
         }
     }
     
+    data() {
+        return this.queue;
+    }
+    
     peek() {
         return this.queue[0];
     }
 
     print() {
+        console.log(this.queue);
         console.log(this.queue.map(function(val) { return val.priority }));
     }
 }
 
+module.exports.PriorityQueue = PriorityQueue;
+
+/* TESTS
 const priorityQueue = new PriorityQueue();
 
 priorityQueue.enqueue(5); // [5]
@@ -185,3 +208,4 @@ priorityQueue.print(); // [null]
 
 priorityQueue.dequeue(); // undefined
 priorityQueue.print(); // [null]
+*/
