@@ -44,37 +44,37 @@ $('#animate').on('click', function() {
     }
 });
 
-$(document).ready(function() {
-    $('input[type=radio][name=search]').change(function() {
-        searchType = this.value;
-        if (dataVisual == 'graph') {
-            graph.clear();
-            drawGraph.drawGraph(graph.graphJSON);
-            newSearch(searchType, graph.data, drawGraph.animatePath);
-        }
-        else {
-            tree.clear();
-            drawTree.drawGraph(tree.root);
-            newSearch(searchType, tree.data, drawTree.animatePath);
-        }
-    });
+// $(document).ready(function() {
+//     $('input[type=radio][name=search]').change(function() {
+//         searchType = this.value;
+//         if (dataVisual == 'graph') {
+//             graph.clear();
+//             drawGraph.drawGraph(graph.graphJSON);
+//             newSearch(searchType, graph.data, drawGraph.animatePath);
+//         }
+//         else {
+//             tree.clear();
+//             drawTree.drawGraph(tree.root);
+//             newSearch(searchType, tree.data, drawTree.animatePath);
+//         }
+//     });
 
 
-    $('input[type=radio][name=type]').change(function() {
+//     $('input[type=radio][name=type]').change(function() {
 
 
-        if (this.value == 'graph') {
-            dataVisual = 'graph';
+//         if (this.value == 'graph') {
+//             dataVisual = 'graph';
 
-            drawNewGraph(searchType);
-        }
-        else if (this.value == 'tree') {
-            dataVisual = 'tree';
+//             drawNewGraph(searchType);
+//         }
+//         else if (this.value == 'tree') {
+//             dataVisual = 'tree';
 
-            drawNewTree(searchType);
-        }
-    });
-});
+//             drawNewTree(searchType);
+//         }
+//     });
+// });
 
 $('#submit').on('click', function() {
 
@@ -124,11 +124,12 @@ function drawNewGraph(search) {
 
     graph = new Graph();
 
-    graph.create(Number(numberOfNodes));
+    // graph.create(Number(numberOfNodes));
+    graph.createWeighted(Number(numberOfNodes));
+    
+    drawGraph.drawFixed(graph.graphJSON);
 
-    drawGraph.drawGraph(graph.graphJSON);
-
-    newSearch(search, graph.data, drawGraph.animatePath);
+    // newSearch(search, graph.data, drawGraph.animatePath);
 }
 
 function drawNewTree(search) {

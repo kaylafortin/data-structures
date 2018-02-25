@@ -29,17 +29,16 @@ class Search {
 
             //get the value for the adjacent elements 
             let edges = graph[current.value].adjacent;
-
-
+            // console.log(edges)
             edges.forEach(function(adjacent, index) {
 
                 //if the adjacent elements haven't been searched add them to queue, 
                 //mark them as visited and indicate their parent
-                if (!graph[adjacent].visited) {
-                    graph[adjacent].visited = true;
-                    graph[adjacent].predecessor = current.value;
+                if (!graph[adjacent.value].visited) {
+                    graph[adjacent.value].visited = true;
+                    graph[adjacent.value].predecessor = current.value;
                    
-                    queue.enqueue(graph[adjacent]);
+                    queue.enqueue(graph[adjacent.value]);
                 }
             });
         }
@@ -56,8 +55,8 @@ class Search {
             this.graph.forEach(function(vertex){
                 console.log('vertex : ', vertex.value, 'predecessor : ', vertex.predecessor);
             });
-            console.log(this.path);
-            return {path: this.path, fullPath: this.path};
+            // console.log(this.path);
+            return {path: this.path, fullPath: this.path, distance: path.length - 1};
         }
 
         let current = end  ;
@@ -69,26 +68,26 @@ class Search {
             current = this.graph[current.predecessor];
         }
         
-        console.log('path : ', path);
-        console.log('distance : ', path.length - 1);
+        // console.log('path : ', path);
+        // console.log('distance : ', path.length - 1);
         
-        return {path: path, fullPath: this.path};
+        return {path: path, fullPath: this.path, distance: path.length - 1};
     }
 }
 
 const VERTICES = 10;
 
-let graph = new Graph();
+// let graph = new Graph();
 
-const search = new Search();
+// const search = new Search();
 
-graph.create(VERTICES);
+// graph.create(VERTICES);
 
-search.start(graph.data, 0, 2);
+// search.start(graph.data, 0, 2);
 
-graph.clear();
+// graph.clear();
 
-search.start(graph.data, 0, 8);
+// search.start(graph.data, 0, 8);
 
 module.exports.BreadthFirst = Search;
 

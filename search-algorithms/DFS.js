@@ -11,7 +11,7 @@ class Search {
     start(graph, root, end) {
 
         let path = [];
-        let stack = new Stack();
+        let stack = new Stack(); 
 
         //add first node to stack and set prop to visited
         stack.push(graph[root]);
@@ -97,19 +97,19 @@ const EDGES = [
 
 module.exports.DepthFirst = Search;
 
-const VERTICES = 10;
+// const VERTICES = 10;
 
-let tree = new Tree();
-let graph = new Graph();
+// let tree = new Tree();
+// let graph = new Graph();
 
-const search = new Search();
+// const search = new Search();
 
 // tree.create(4, 10);
 // search.start(tree.data, 0);
 
-graph.build(VERTICES, EDGES);
+// graph.build(VERTICES, EDGES);
 
-search.start(graph.data, 0, 3);
+// search.start(graph.data, 0, 3);
 
 // graph.create(VERTICES);
 // graph.print();
